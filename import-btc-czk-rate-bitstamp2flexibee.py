@@ -13,6 +13,10 @@ from decimal import Decimal
 import bitstamp.client
 from datetime import date
 
+# Disable all SSL related warnings since flexibee is accessible via
+# VPN only but the SSL certificate is invalid
+requests.packages.urllib3.disable_warnings()
+
 if len(sys.argv) != 3:
     print "Missing login credentials"
     print "Synopsis: %s user password" % os.path.basename(sys.argv[0])
