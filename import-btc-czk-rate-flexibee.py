@@ -4,39 +4,10 @@
 # Synopsis: see below
 #
 import sys
-import requests, json
+import requests
 import os
+import flexibee.api
 
-
-class ExchangeRate(object):
-    """
-    Exchange rate object as required by the flexibee API
-    """
-    def __init__(self, valid_from, rate, currency='code:UBTC', amount=1000000):
-	self.mena = currency
-	self.nbStred = rate
-	self.platiOdData = valid_from
-	self.kurzMnozstvi = amount
-
-
-class RateRequest(object):
-    """
-    Represents the exchange rate request
-    """
-    def __init__(self, rates=[]):
-	"""
-	@param rates - a list of exchange rates
-	"""
-	self.rates = rates
-
-    def to_json(self):
-	json_dict = {"winstrom":
-			 {"@version":"1.0",
-			  "kurz": [ r.__dict__ for r in self.rates ]
-			  }
-		     }
-
-	return json.dumps(json_dict)
 
 
 if len(sys.argv) != 3:
@@ -50,9 +21,9 @@ acc_url = "https://acc.bnet:5434/c/braiins_systems_s_r_o_1/kurz.json"
 rates = []
 for line in sys.stdin:
     (date, none1, none2, btc_czk) = line.rstrip().split(';')
-    rates.append(ExchangeRate(date, btc_czk))
+    rates.append(flexibee.api.ExchangeRate(date, btc_czk))
 
-rate_req = RateRequest(rates).to_json()
+rate_req = flexibee.api.RateRequest(rates).to_json()
 
 print "Sending: %s" % rate_req
 
