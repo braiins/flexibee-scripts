@@ -12,16 +12,44 @@ import flexibee.api
 from decimal import Decimal
 import bitstamp.client
 from datetime import date
+from optparse import OptionParser
 
 # Disable all SSL related warnings since flexibee is accessible via
 # VPN only but the SSL certificate is invalid
 requests.packages.urllib3.disable_warnings()
 
-if len(sys.argv) != 3:
-    print "Missing login credentials"
-    print "Synopsis: %s user password" % os.path.basename(sys.argv[0])
-    sys.exit(2)
+class BTCPriceOptionParser(OptionParser):
+    """
+    Extended option parser to provide configuration for the
+    release
+    """
+    usage_text = "%prog [options] username password\nImports BTC/CZK exchange rate for the current day"
+    def __init__(self, usage=usage_text):
+	"""
+	Appends all options
 
+	@param self - this option parser
+	"""
+	OptionParser.__init__(self, usage=usage)
+	default_url = "https://acc.bnet:5434/c/braiins_systems_s_r_o_1"
+
+	self.add_option("-l", "--url", action="store",
+			dest="url",
+			default=default_url,
+			type="string",
+			help="Flexibee URL (default: %s)" %
+			default_url)
+
+
+
+p = BTCPriceOptionParser()
+(opts, args) = p.parse_args(sys.argv[1:])
+
+if len(args) != 2:
+    p.error("Missing login credentials")
+
+username = args[0]
+password = args[1]
 
 CNB_API_URI = 'http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt'
 CNB_API_CURRENCY_AMOUNT = 2
@@ -52,15 +80,12 @@ btc_czk_str = "%s" % btc_czk.quantize(Decimal('1e-2'))
 print "USD/CZK: %s; BTC/USD: %s; BTC/CZK: %s" % (usd_czk, btc_usd, btc_czk_str)
 
 
-# import the exchange rate into flexibee
-acc_url = "https://acc.bnet:5434/c/braiins_systems_s_r_o_1"
-
 req = flexibee.api.RateRequest()
 req.append(flexibee.api.ExchangeRate(date.today().strftime("%Y-%m-%d"),
 				     btc_czk_str))
 
 print "Sending: %s" % req
 
-response = req.send(acc_url, sys.argv[1], sys.argv[2])
+response = req.send(opts.url, username, password)
 
 print "Received: %s" % response.content
