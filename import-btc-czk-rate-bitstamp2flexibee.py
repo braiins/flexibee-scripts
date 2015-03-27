@@ -86,6 +86,6 @@ req.append(flexibee.api.ExchangeRate(date.today().strftime("%Y-%m-%d"),
 
 print "Sending: %s" % req
 
-response = req.send(opts.url, username, password)
+response = req.put(opts.url, username, password)
 
 print "Received: %s" % response.content
