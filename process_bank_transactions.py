@@ -64,5 +64,5 @@ try:
                                                  response.content)
 
 except Exception, e:
-    print '%s' % e.value
+    print 'Error: %s' % e
     sys.exit(2)
