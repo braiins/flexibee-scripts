@@ -8,6 +8,7 @@
 import sys
 import requests
 import os
+import importlib
 import flexibee.api
 from decimal import Decimal
 import bitstamp.client
@@ -23,7 +24,7 @@ class BTCPriceOptionParser(OptionParser):
     Extended option parser to provide configuration for the
     release
     """
-    usage_text = "%prog [options] username password\nImports BTC/CZK exchange rate for the current day"
+    usage_text = "%prog [options] settings\nImports BTC/CZK exchange rate for the current day"
     def __init__(self, usage=usage_text):
 	"""
 	Appends all options
@@ -31,25 +32,16 @@ class BTCPriceOptionParser(OptionParser):
 	@param self - this option parser
 	"""
 	OptionParser.__init__(self, usage=usage)
-	default_url = "https://acc.bnet:5434/c/braiins_systems_s_r_o_1"
-
-	self.add_option("-l", "--url", action="store",
-			dest="url",
-			default=default_url,
-			type="string",
-			help="Flexibee URL (default: %s)" %
-			default_url)
-
 
 
 p = BTCPriceOptionParser()
 (opts, args) = p.parse_args(sys.argv[1:])
 
-if len(args) != 2:
-    p.error("Missing login credentials")
+if len(args) != 1:
+    p.error("Missing settings")
 
-username = args[0]
-password = args[1]
+# import custom settings
+settings = importlib.import_module(args[0])
 
 CNB_API_URI = 'http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt'
 CNB_API_CURRENCY_AMOUNT = 2
@@ -79,13 +71,18 @@ btc_czk = usd_czk * btc_usd
 btc_czk_str = "%s" % btc_czk.quantize(Decimal('1e-2'))
 print "USD/CZK: %s; BTC/USD: %s; BTC/CZK: %s" % (usd_czk, btc_usd, btc_czk_str)
 
-
-req = flexibee.api.RateRequest()
-req.append(flexibee.api.ExchangeRate(date.today().strftime("%Y-%m-%d"),
+try:
+    req = flexibee.api.RateRequest()
+    req.append(flexibee.api.ExchangeRate(date.today().strftime("%Y-%m-%d"),
 				     btc_czk_str))
 
-print "Sending: %s" % req
+    print "Sending: %s" % req
 
-response = req.put(opts.url, username, password)
+    response = req.put(settings.url, settings.user, settings.passwd)
 
-print "Received: %s" % response.content
+    print "Received: %s" % response.content
+
+except Exception, e:
+    print 'Error: %s' % e
+    sys.exit(2)
+
