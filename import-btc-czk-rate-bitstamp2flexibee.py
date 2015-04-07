@@ -26,12 +26,12 @@ class BTCPriceOptionParser(OptionParser):
     """
     usage_text = "%prog [options] settings\nImports BTC/CZK exchange rate for the current day"
     def __init__(self, usage=usage_text):
-	"""
-	Appends all options
+        """
+        Appends all options
 
-	@param self - this option parser
-	"""
-	OptionParser.__init__(self, usage=usage)
+        @param self - this option parser
+        """
+        OptionParser.__init__(self, usage=usage)
 
 
 p = BTCPriceOptionParser()
@@ -53,11 +53,11 @@ response = requests.get(CNB_API_URI, params={"date": date.today().strftime("%d.%
 rates = {}
 for number, line in enumerate(response.iter_lines()):
     if number > 2:
-	currency = line.split('|')
-	amount = int(currency[CNB_API_CURRENCY_AMOUNT])
-	rate_float = Decimal(currency[CNB_API_CURRENCY_RATE].replace(',', '.'))
+        currency = line.split('|')
+        amount = int(currency[CNB_API_CURRENCY_AMOUNT])
+        rate_float = Decimal(currency[CNB_API_CURRENCY_RATE].replace(',', '.'))
 
-	rates[currency[CNB_API_CURRENCY_CODE]] = rate_float / amount
+        rates[currency[CNB_API_CURRENCY_CODE]] = rate_float / amount
 
 usd_czk = rates['USD']
 
@@ -74,7 +74,7 @@ print "USD/CZK: %s; BTC/USD: %s; BTC/CZK: %s" % (usd_czk, btc_usd, btc_czk_str)
 try:
     req = flexibee.api.RateRequest()
     req.append(flexibee.api.ExchangeRate(date.today().strftime("%Y-%m-%d"),
-				     btc_czk_str))
+                                     btc_czk_str))
 
     print "Sending: %s" % req
 
@@ -85,4 +85,3 @@ try:
 except Exception, e:
     print 'Error: %s' % e
     sys.exit(2)
-
