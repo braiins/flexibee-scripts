@@ -7,15 +7,16 @@ import sys
 import requests
 import os
 import flexibee.api
+import importlib
 
 
-
-if len(sys.argv) != 3:
-    print "Missing login credentials"
-    print "Synopsis: %s user password" % os.path.basename(sys.argv[0])
+if len(sys.argv) != 2:
+    print "Missing user settings"
+    print "Synopsis: %s settings" % os.path.basename(sys.argv[0])
     sys.exit(2)
 
-acc_url = "https://acc.bnet:5434/c/braiins_systems_s_r_o_1"
+# import custom settings
+settings = importlib.import_module(sys.argv[1])
 
 
 req = flexibee.api.RateRequest()
@@ -24,8 +25,13 @@ for line in sys.stdin:
     req.append(flexibee.api.ExchangeRate(date, btc_czk))
 
 
-print "Sending: %s" % req
+try:
+    print "Sending: %s" % req
 
-response = req.send(acc_url, sys.argv[1], sys.argv[2])
+    response = req.send(settings.url, settings.user, settings.passwd)
 
-print response.content
+    print response.content
+
+except Exception, e:
+    print 'Error: %s' % e
+    sys.exit(2)
