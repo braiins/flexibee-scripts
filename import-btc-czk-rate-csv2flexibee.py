@@ -28,7 +28,7 @@ for line in sys.stdin:
 try:
     print "Sending: %s" % req
 
-    response = req.send(settings.url, settings.user, settings.passwd)
+    response = req.put(settings.url, settings.user, settings.passwd)
 
     print response.content
 
