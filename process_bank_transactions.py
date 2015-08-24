@@ -57,12 +57,7 @@ try:
                 t.typUcOp = p.get_op()
                 bank_req.append(t)
 
-
-    print 'flexibee-automation[%s]: %s -> %s' % (sys.argv[0], settings.url,
-                                                 bank_req._to_json())
     response = bank_req.put(settings.url, settings.user, settings.passwd)
-    print 'flexibee-automation[%s]: %s -> %s' % (sys.argv[0], settings.url,
-                                                 response.content)
 
 except Exception, e:
     print 'Error: %s' % e
