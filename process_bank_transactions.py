@@ -10,6 +10,7 @@ import flexibee.api
 import flexibee.automation
 import re
 import importlib
+import traceback
 
 # Disable all SSL related warnings since flexibee is accessible via
 # VPN only but the SSL certificate is invalid
@@ -65,4 +66,5 @@ try:
 
 except Exception, e:
     print 'Error: %s' % e
+    print(traceback.format_exc())
     sys.exit(2)
