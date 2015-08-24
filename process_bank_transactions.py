@@ -48,7 +48,7 @@ try:
 
     # Iterate through all fetched transaction and process them
     for t in transactions:
-        print '%s' % t.popis
+        print '%s' % t.popis.encode('utf-8')
         for p in processors:
             if p.match(t.popis) is not None:
                 # processor provides a new type accounting
