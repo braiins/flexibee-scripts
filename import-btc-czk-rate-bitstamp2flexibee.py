@@ -9,7 +9,8 @@ import sys
 import requests
 import os
 import importlib
-import flexibee.api
+from flexibee.api import RateRequest
+from flexibee.objects import ExchangeRate
 from decimal import Decimal
 import bitstamp.client
 from datetime import date
@@ -73,9 +74,10 @@ btc_czk_str = "%s" % btc_czk.quantize(Decimal('1e-2'))
 print "USD/CZK: %s; BTC/USD: %s; BTC/CZK: %s" % (usd_czk, btc_usd, btc_czk_str)
 
 try:
-    req = flexibee.api.RateRequest()
-    req.append(flexibee.api.ExchangeRate(date.today().strftime("%Y-%m-%d"),
-                                     btc_czk_str))
+    req = RateRequest()
+    today_str = date.today().strftime("%Y-%m-%d")
+    req.append(ExchangeRate.new_for_update(today_str,
+                                                        btc_czk_str))
 
     print "Sending: %s" % req
 
