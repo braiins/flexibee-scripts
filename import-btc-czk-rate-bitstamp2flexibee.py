@@ -13,6 +13,7 @@ import flexibee.api
 from decimal import Decimal
 import bitstamp.client
 from datetime import date
+import traceback
 from optparse import OptionParser
 
 # Disable all SSL related warnings since flexibee is accessible via
@@ -84,4 +85,5 @@ try:
 
 except Exception, e:
     print 'Error: %s' % e
+    print(traceback.format_exc())
     sys.exit(2)
