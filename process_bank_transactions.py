@@ -8,6 +8,7 @@ import requests
 import os
 import flexibee.api
 import flexibee.automation
+from flexibee.objects import BankTransaction
 import re
 import importlib
 import traceback
@@ -33,7 +34,7 @@ bank_req = flexibee.api.BankRequest("zuctovano='False'")
 
 try:
     transactions = \
-        bank_req.get_and_build_objects(flexibee.api.BankTransaction,
+        bank_req.get_and_build_objects(BankTransaction,
                                        settings.url,
                                        settings.user,
                                        settings.passwd,
