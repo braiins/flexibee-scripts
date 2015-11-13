@@ -29,3 +29,5 @@ The set of script provides the following automated operations:
 - import daily bitcoin exchange rate based on the average rate from
   bitstamp
 - processing of bank transactions based on user specified map/filter
+- transformation of CZK invoices to BTC while using the current
+  exchange rate
