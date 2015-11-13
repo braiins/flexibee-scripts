@@ -1,0 +1,2 @@
+BitstampClient
+git+https://github.com/braiins/pyflexibee.git
