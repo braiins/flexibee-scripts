@@ -13,13 +13,17 @@ Example configuration is given in: settings_template.py
 ```
 mkdir flexibee-automation
 cd flexibee-automation
+mkdir config
 virtualenv .env
+echo `pwd`/config > ./.env/lib/python2.7/site-packages/flexibee-scripts-config.pth
 source .env/bin/activate
 ```
 
 Install all requirements:
 
 pip install -r requirements.txt
+
+Custom configuration settings can be placed in **flexibee-automation/config** directory or similar depending on particular path setup
 
 
 ## Current Script Suite
