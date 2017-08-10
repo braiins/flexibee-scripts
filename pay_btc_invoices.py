@@ -174,10 +174,10 @@ try:
         total_in_btc = (total_in_ubtc) / 1000000
         total_in_btc_str = '%s' % total_in_btc.quantize(Decimal('1e-8'))
 
-        payment_csv_lines.append('%s,%s' %
-                                 (invoice.banSpojDod[0]['buc'].strip(),
-                                  total_in_btc_str))
         company_name = invoice.banSpojDod[0]['firma'].replace('code:', '')
+        payment_csv_lines.append('%s,%s,BTC,%s:%s' %
+                                 (invoice.banSpojDod[0]['buc'].strip(),
+                                  total_in_btc_str,invoice.kod,company_name))
         payment_descriptions.append(company_name)
 
         # Add the invoice to the update request to convert the unpaid
