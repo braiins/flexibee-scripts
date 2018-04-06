@@ -66,6 +66,12 @@ class ExchangeRateToday(object):
         if len(self.exchange_rate_btc_today) == 0:
             raise Exception('No BTC/CZK exchange rate available for today: %s' % today_str)
 
+    def get_rate(self):
+        """
+        @return today's exchange rate
+        """
+        return self.lookup(None).nbStred
+
 
     def lookup(self, invoice_code):
         """
@@ -77,7 +83,7 @@ class ExchangeRateToday(object):
 
 
     def __str__(self):
-        return '%s BTC/CZK' % self.exchange_rate_btc_today[0].nbStred
+        return '%s BTC/CZK' % self.get_rate()
 
 
 
@@ -158,22 +164,27 @@ try:
     payment_csv_lines = []
     payment_descriptions = []
 
+    exchange_rate_today = ExchangeRateToday(settings)
     if args.exchange_rate_file is None:
-        exchange_rate_registry = ExchangeRateToday(settings)
+        exchange_rate_registry = exchange_rate_today
         get_payment_date = lambda invoice: today_str
     else:
         exchange_rate_registry = ExchangeRatePerInvoice(args.exchange_rate_file)
         get_payment_date = lambda invoice: invoice.datVyst
 
-
+    all_invoices_total_btc = 0
+    all_invoices_total = Decimal(0)
     for invoice in unpaid_invoices:
         invoice_exchange_rate = exchange_rate_registry.lookup(invoice.kod)
         total_in_ubtc = \
             invoice_exchange_rate.convert_to_currency(invoice.sumCelkem)
         total_in_ubtc_str = '%s' % total_in_ubtc.quantize(Decimal('1e-2'))
         total_in_btc = (total_in_ubtc) / 1000000
+        all_invoices_total_btc += total_in_btc
+        all_invoices_total += Decimal(invoice.sumCelkem)
         total_in_btc_str = '%s' % total_in_btc.quantize(Decimal('1e-8'))
-
+        if len(invoice.banSpojDod) == 0:
+            print('Warning: Skipping invoice: %s due to missing bank account' % invoice)
         company_name = invoice.banSpojDod[0]['firma'].replace('code:', '')
         payment_csv_lines.append('%s,%s,BTC,%s:%s' %
                                  (invoice.banSpojDod[0]['buc'].strip(),
@@ -232,7 +243,10 @@ try:
         print line
     print '--------------------------------------------'
     print 'Description: %s %s' % ((',').join(payment_descriptions), today_str)
-    print 'Exchange Rate: %s' % exchange_rate_registry
+    print 'Total: %s BTC = %s CZK (exchange rate today: %s)' % (
+        all_invoices_total_btc.quantize(Decimal('1e-8')),
+        all_invoices_total.quantize(Decimal('1e-2')),
+        exchange_rate_today)
 
 
 
