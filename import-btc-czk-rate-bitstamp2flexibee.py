@@ -54,7 +54,7 @@ CNB_API_CURRENCY_RATE = 4
 response = requests.get(CNB_API_URI, params={"date": date.today().strftime("%d.%m.%Y")})
 rates = {}
 for number, line in enumerate(response.iter_lines()):
-    if number > 2:
+    if number > 2 and line:
         currency = line.split('|')
         amount = int(currency[CNB_API_CURRENCY_AMOUNT])
         rate_float = Decimal(currency[CNB_API_CURRENCY_RATE].replace(',', '.'))
