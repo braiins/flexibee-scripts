@@ -49,16 +49,18 @@ try:
 
     # Iterate through all fetched transaction and process them
     for t in transactions:
-        print '%s' % t.popis.encode('utf-8')
         for p in processors:
             if p.match(t.popis) is not None:
+                print('Changing accounting status: {} {} {}'.format(t.id, t.datVyst, t.popis.encode('utf-8')))
                 # processor provides a new type accounting
                 # operation. Therefore, we override the current one
                 # (current operation should be empty)
                 t.typUcOp = p.get_op()
+                t.stredisko = 'code:C'
                 bank_req.append(t)
 
     response = bank_req.put(settings.url, settings.user, settings.passwd)
+    print(response)
 
 except Exception, e:
     print 'Error: %s' % e
