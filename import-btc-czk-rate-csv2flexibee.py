@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # Purpose: simple script that loads btc/czk exchange rates from CSV into flexibee
 # Synopsis: see below

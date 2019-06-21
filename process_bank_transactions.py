@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Purpose: This script processes bank transactions based on user specified map.
 # Synopsis: see below

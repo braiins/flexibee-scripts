@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # Purpose: simple script that loads btc/czk exchange rates based on
 # weighted average BTC price from bitstamp and the current exchange
