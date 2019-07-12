@@ -223,12 +223,12 @@ try:
         print 'Updating all invoices with current BTC exchange rate'
         response = unpaid_invoices_update_req.put(settings.url, settings.user,
                                                   settings.passwd)
-        print 'Received: %s' % response.content
+        print 'Received: %s' % response
 
         print 'Updating all invoices'
         response = unpaid_invoices_payment_req.put(settings.url, settings.user,
                                                    settings.passwd)
-        print 'Received: %s' % response.content
+        print 'Received: %s' % response
 
 
     # r = CashTransactionRequest()
